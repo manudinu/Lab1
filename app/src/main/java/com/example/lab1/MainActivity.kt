@@ -15,12 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.lab1.ui.theme.Lab1Theme
-import androidx.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +41,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainContent() {
+    // Define custom colors once, use consistently
+    val primaryColor = Color(0xFF6200EE) // Example: Purple
+    val secondaryColor = Color(0xFF03DAC5) // Example: Teal
+    val buttonColor = Color(0xFFBB86FC) // Example: Light Purple
+    val primaryTextColor = Color(0xFFF2E7FE) // A light color for contrast against purple
+    val buttonTextColor = Color.Black // Dark color for button text
+
     var greeting by remember { mutableStateOf("Hello, World!") }
     var isRotated by remember { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(if (isRotated) 360f else 0f)
@@ -49,11 +56,8 @@ fun MainContent() {
         modifier = Modifier
             .fillMaxSize()
             .background(
-                Brush.linearGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.secondary
-                    )
+                brush = Brush.linearGradient(
+                    colors = listOf(primaryColor, secondaryColor)
                 )
             ),
         contentAlignment = Alignment.Center
@@ -64,7 +68,7 @@ fun MainContent() {
             Text(
                 text = greeting,
                 style = MaterialTheme.typography.headlineMedium.copy(
-                    color = Color.White,
+                    color = primaryTextColor,
                     fontWeight = FontWeight.Bold
                 ),
                 textAlign = TextAlign.Center,
@@ -73,13 +77,14 @@ fun MainContent() {
                     .rotate(rotationAngle)
             )
             Spacer(modifier = Modifier.height(24.dp))
+
             Button(
                 onClick = {
-                    greeting = if (greeting == "Hello, World!") "Welcome to Compose!" else "Hello, World!"
+                    greeting = if (greeting == "Hello, World!") "Welcome to Manoj's World!" else "Hello, World!"
                     isRotated = !isRotated
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary
+                    containerColor = buttonColor
                 ),
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier
@@ -88,21 +93,15 @@ fun MainContent() {
                     .width(200.dp)
             ) {
                 Text(
-                    text = "Press Me",
+                    text = "Tap!",
                     style = MaterialTheme.typography.labelLarge.copy(
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold
+                        color = buttonTextColor, // Set "Tap!" button text to black
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
                     )
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainContentPreview() {
-    Lab1Theme {
-        MainContent()
     }
 }
