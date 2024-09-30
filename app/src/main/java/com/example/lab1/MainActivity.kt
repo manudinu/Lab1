@@ -4,16 +4,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.Button
-import androidx.compose.material3.TextField
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.lab1.ui.theme.Lab1Theme
+import androidx.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,9 +28,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Lab1Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Pass the padding to the content
-                    MainContent(modifier = Modifier.padding(innerPadding))
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    MainContent()
                 }
             }
         }
@@ -31,43 +40,62 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainContent(modifier: Modifier = Modifier) {
-    // State variables to hold the text input and greeting message
-    var name by remember { mutableStateOf("") }
-    var greeting by remember { mutableStateOf("Hello!") }
+fun MainContent() {
+    var greeting by remember { mutableStateOf("Hello, World!") }
+    var isRotated by remember { mutableStateOf(false) }
+    val rotationAngle by animateFloatAsState(if (isRotated) 360f else 0f)
 
-    Column(
-        modifier = modifier
+    Box(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondary
+                    )
+                )
+            ),
+        contentAlignment = Alignment.Center
     ) {
-        // TextField (textbox) for user input
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Enter your name") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Button to update the greeting
-        Button(
-            onClick = {
-                greeting = if (name.isNotBlank()) "Hello, $name!" else "Hello!"
-            },
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Greet")
+            Text(
+                text = greeting,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .rotate(rotationAngle)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = {
+                    greeting = if (greeting == "Hello, World!") "Welcome to Compose!" else "Hello, World!"
+                    isRotated = !isRotated
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary
+                ),
+                shape = RoundedCornerShape(24.dp),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .height(56.dp)
+                    .width(200.dp)
+            ) {
+                Text(
+                    text = "Press Me",
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Display the greeting message
-        Text(
-            text = greeting,
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
