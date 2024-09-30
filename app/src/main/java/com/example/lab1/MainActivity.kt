@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,11 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.lab1.ui.theme.Lab1Theme
+import androidx.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,12 +43,7 @@ class MainActivity : ComponentActivity() {
 fun MainContent() {
     var greeting by remember { mutableStateOf("Hello, World!") }
     var isRotated by remember { mutableStateOf(false) }
-    var isColorToggled by remember { mutableStateOf(false) }
-
-    val rotationAngle by animateFloatAsState(targetValue = if (isRotated) 360f else 0f)
-    val textColor by animateColorAsState(
-        targetValue = if (isColorToggled) Color.Yellow else Color.White
-    )
+    val rotationAngle by animateFloatAsState(if (isRotated) 360f else 0f)
 
     Box(
         modifier = Modifier
@@ -69,7 +64,7 @@ fun MainContent() {
             Text(
                 text = greeting,
                 style = MaterialTheme.typography.headlineMedium.copy(
-                    color = textColor,
+                    color = Color.White,
                     fontWeight = FontWeight.Bold
                 ),
                 textAlign = TextAlign.Center,
@@ -88,7 +83,7 @@ fun MainContent() {
                 ),
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(16.dp)
                     .height(56.dp)
                     .width(200.dp)
             ) {
@@ -98,29 +93,6 @@ fun MainContent() {
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold
                     )
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    isColorToggled = !isColorToggled
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                ),
-                shape = RoundedCornerShape(24.dp),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .height(56.dp)
-                    .width(200.dp)
-            ) {
-                Text(
-                    text = "Change Text Color",
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    textAlign = TextAlign.Center
                 )
             }
         }
